@@ -20,6 +20,10 @@ for external usage.
 \item{\code{export_pattern}}{Regular expression for finding export statements in bash files.}
 
 \item{\code{var_pattern}}{Regular expression for identifying variable references.}
+
+\item{\code{variable_pattern}}{Regular expression for finding variable declarations.}
+
+\item{\code{comment_pattern}}{Regular expression for identifying comments}
 }}
 
 \section{Methods}{

@@ -9,7 +9,24 @@ load_vars(bash_file)
 \arguments{
 \item{bash_file}{A connection object or character string to pass to \code{readLines}.}
 }
+\value{
+Invisibly,  a list object containing all currently set environment variables.
+}
 \description{
 \code{load_vars} reads the contents of a bash file, loads,
 evaluates and sets environment variables in the current R session.
+}
+\examples{
+\dontrun{
+# read variables from file
+load_vars("~/.bashrc")
+
+# acccess via standard call to Sys.getenv
+Sys.getenv("foo") # "bar"
+
+# alternatively, access via the return value
+vars <- load_vars(".env")
+vars$foo # "bar"
+
+}
 }

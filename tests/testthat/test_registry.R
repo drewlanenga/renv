@@ -14,7 +14,6 @@ test_that("variable registry gets and sets new variables.", {
   expect_equal(length(r$vars), nvars + 1)
 })
 
-
 test_that("variable registry evaluates variable references.", {
   r <- registry$new()
 

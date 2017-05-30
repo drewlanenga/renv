@@ -6,11 +6,15 @@
 #' @field vars A named list of environment variables.
 #' @field export_pattern Regular expression for finding export statements in bash files.
 #' @field var_pattern Regular expression for identifying variable references.
+#' @field variable_pattern Regular expression for finding variable declarations.
+#' @field comment_pattern Regular expression for identifying comments
 
 registry <- setRefClass("registry",
 	fields = list(
 		vars = "list",
 		export_pattern = "character",
+		variable_pattern = "character",
+		comment_pattern = "character",
 		var_pattern = "character"
 	),
 	methods = list(
@@ -20,6 +24,8 @@ registry <- setRefClass("registry",
 
 			export_pattern <<- "^export " # line starts with `export `.  ignores commented lines.
 			var_pattern <<- "(\\$[A-z0-9]{1,})" # alphanumeric name, with leading dollar
+			variable_pattern <<- "(^export [A-z0-9]{1,}|^[A-z0-9]{1,})\\="
+			comment_pattern <<- "[ ]{0,}#.+$" # remove anything after the comment plus leading whitespace
 		},
 		set = function(k, v) {
 			"Add a new variable to the registry, and evaluate for references to other variables."
@@ -48,7 +54,8 @@ registry <- setRefClass("registry",
 		load = function(bash_file) {
 			"Load a bash file and set all exported variables."
 			raw.vars <- readLines(bash_file) %>%
-				stringr::str_subset(export_pattern) %>% # filter out non-environment variables
+				stringr::str_subset(variable_pattern) %>% # filter out non-environment variables
+				stringr::str_replace_all(comment_pattern, "") %>% # filter out commented values
 				stringr::str_replace_all(export_pattern, "") %>% # replace the export pattern
 				stringr::str_replace_all("\"", "") %>% # replace any quotes in the value
 				stringr::str_split("=", 2) %>% # split on the first equals
@@ -68,7 +75,22 @@ registry <- setRefClass("registry",
 #' evaluates and sets environment variables in the current R session.
 #'
 #' @param bash_file A connection object or character string to pass to \code{readLines}.
+#' @return Invisibly,  a list object containing all currently set environment variables.
+#'
 #' @export
+#' @examples
+#' \dontrun{
+#' # read variables from file
+#' load_vars("~/.bashrc")
+#'
+#' # acccess via standard call to Sys.getenv
+#' Sys.getenv("foo") # "bar"
+#'
+#' # alternatively, access via the return value
+#' vars <- load_vars(".env")
+#' vars$foo # "bar"
+#'
+#' }
 load_vars <- function(bash_file) {
 	r <- registry$new()
 	r$load(bash_file)
@@ -78,5 +100,5 @@ load_vars <- function(bash_file) {
 		.Internal(Sys.setenv(k, r$get(k)))
 	})
 
-	invisible(r)
+	invisible(r$vars)
 }

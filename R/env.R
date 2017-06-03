@@ -4,7 +4,7 @@
 #' for external usage.
 #'
 #' @field vars A named list of environment variables.
-#' @field export_pattern Regular expression for finding export statements in bash files.
+#' @field export_pattern Regular expression for finding export statements in environment files.
 #' @field var_pattern Regular expression for identifying variable references.
 #' @field variable_pattern Regular expression for finding variable declarations.
 #' @field comment_pattern Regular expression for identifying comments
@@ -51,9 +51,9 @@ registry <- setRefClass("registry",
 			}
 			return(stringr::str_replace(v, ";$", "")) # strip trailing semicolons
 		},
-		load = function(bash_file) {
-			"Load a bash file and set all exported variables."
-			raw.vars <- readLines(bash_file) %>%
+		load = function(env_file) {
+			"Load an environment file and set all exported variables."
+			raw.vars <- readLines(env_file) %>%
 				stringr::str_subset(variable_pattern) %>% # filter out non-environment variables
 				stringr::str_replace_all(comment_pattern, "") %>% # filter out commented values
 				stringr::str_replace_all(export_pattern, "") %>% # replace the export pattern
@@ -71,10 +71,10 @@ registry <- setRefClass("registry",
 
 #' Load environment variables into the current R session
 #'
-#' \code{load_vars} reads the contents of a bash file, loads,
+#' \code{load_vars} reads the contents of an environment file, loads,
 #' evaluates and sets environment variables in the current R session.
 #'
-#' @param bash_file A connection object or character string to pass to \code{readLines}.
+#' @param env_file A connection object or character string to pass to \code{readLines}.
 #' @return Invisibly,  a list object containing all currently set environment variables.
 #'
 #' @export
@@ -91,9 +91,9 @@ registry <- setRefClass("registry",
 #' vars$foo # "bar"
 #'
 #' }
-load_vars <- function(bash_file) {
+load_vars <- function(env_file) {
 	r <- registry$new()
-	r$load(bash_file)
+	r$load(env_file)
 
 	# set the environment variables
 	lapply(names(r$vars), function(k){

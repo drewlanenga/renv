@@ -1,22 +1,29 @@
 
-bashr
+renv
 ==========
 
-[![Build Status](https://travis-ci.org/drewlanenga/bashr.svg?branch=master)](https://travis-ci.org/drewlanenga/bashr)
+[![Build Status](https://travis-ci.org/drewlanenga/renv.svg?branch=master)](https://travis-ci.org/drewlanenga/renv)
 
-Read environment variables from a bash file and load them in the current R session.
+Read environment variables from an environment file and load them in the current R session.
+
+`renv` supports reading both shell formats and `.env` formats.
+
+```{bash}
+export $FOO=bar
+thing1=thing2
+```
 
 # Getting Started
 
 ## Installation
 
 ```r
-devtools::install_github("drewlanenga/bashr")
+devtools::install_github("drewlanenga/renv")
 ```
 
 ## Usage
 
 ```r
-library(bashr)
+library(renv)
 load_vars("~/.bashrc")
 ```

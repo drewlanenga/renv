@@ -16,7 +16,6 @@ test_that("variables are loaded into the session.", {
 
   # reset new variables to give other tests a new slate
   for(name in names(vars)[!(names(vars) %in% existing)]) {
-    print(paste("resetting", name))
     .Internal(Sys.setenv(name, ""))
   }
 })

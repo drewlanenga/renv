@@ -1,4 +1,4 @@
 library(testthat)
-library(bashr)
+library(renv)
 
-test_check("bashr")
+test_check("renv")

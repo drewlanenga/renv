@@ -1,6 +1,7 @@
 ---
-title       : bashr
-subtitle    : Reading bash files in R
+title       : renv
+subtitle    : Load environment files in R
+projecturl  : https://drewlanenga.github.io/renv
 author      : Drew Lanenga
 authorurl   : https://github.com/drewlanenga
 authortitle : Data Scientist, Lytics
@@ -13,18 +14,7 @@ mode        : selfcontained
 
 --- .shout
 
-## [bashr](https://github.com/drewlanenga/bashr)
-
----
-
-## bashr
-
-- Confession: `bashr != bash + r`
-- More about *environment variables* than about *bash*
-- Reads bash formatted variable exporting
-    - `export FOO=bar`
-- Also supports reading [`.env`](https://github.com/bkeepers/dotenv) formatted files
-    - `FOO=bar`
+## [renv](https://github.com/drewlanenga/renv)
 
 ---
 
@@ -49,9 +39,16 @@ mode        : selfcontained
 
 ## Why not Renviron?
 
-- Having multiple locations for identical configuration settings is **annoying**.
 - You might be **already using bash** (or other shell scripting) to manage environment settings, anyway.
 - **Shared environment variables** make them available across a range of processes.
+- Having multiple locations for identical configuration settings is **annoying**.
+
+<figure>
+	<blockquote>
+		<p><strong>Drew's Law</strong>: If you ever have the same configuration data stored in multiple locations, at some point it will cause a headache.</p>
+	</blockquote>
+	<figcaption><a href="https://github.com/drewlanenga">Drew Lanenga</a></figcaption>
+</figure>
 
 ---
 
@@ -75,11 +72,11 @@ mode        : selfcontained
 
 ```
 # get variables from standard Sys.getenv call
-bashr::load_vars("~/.bashrc")
+renv::load_vars("~/.bashrc")
 foo <- Sys.getenv("foo")
 
 # alternatively, assign value at load
-vars <- bashr::load_vars("~/.bashrc")
+vars <- renv::load_vars("~/.bashrc")
 foo <- vars$foo
 ```
 
@@ -115,7 +112,7 @@ export plotly_api_key=your_api_key
 
 
 ```r
-bashr::load_vars("plotly.sh")
+renv::load_vars("plotly.sh")
 ```
 
 ---
@@ -135,6 +132,6 @@ export S3_URL=$S3_ROOT/$S3_PATH
 
 
 ```r
-vars <- bashr::load_vars("s3info.sh")
+vars <- renv::load_vars("s3info.sh")
 mydata <- read.csv(paste0(vars$S3_URL, "/mydata.csv"))
 ```
